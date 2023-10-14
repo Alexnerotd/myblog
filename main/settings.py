@@ -10,7 +10,7 @@ env = environ.Env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-environ.Env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -48,7 +48,7 @@ THIRD_APPS = [
     'drf_yasg',
 ]
 
-INSTALLED_APPS =  + BASE_APPS + LOCAL_APPS + THIRD_APPS
+INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -109,6 +109,8 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
+AUTH_USER_MODEL = 'accounts.MyUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
