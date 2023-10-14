@@ -8,6 +8,7 @@ class MyUserSerializer(ModelSerializer):
     class Meta:
         model = MyUser
         fields = "__all__"
+
         
 class MyUserSerializerPOST(ModelSerializer):
     class Meta:

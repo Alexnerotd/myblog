@@ -4,13 +4,13 @@ from django.contrib.auth import login, logout, authenticate
 
 
 from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.response import Response
 from rest_framework import exceptions
 
 
 from .models import MyUser
-from .serializers import MyUserSerializerPOST, MyUserSerializerUpdate
+from .serializers import MyUserSerializerPOST, MyUserSerializerUpdate, MyUserSerializer
 
 # Create your views here.
 
@@ -38,3 +38,15 @@ class Register(APIView):
             return Response({"ERROR":"Los datos ingresados no son validos"}, status=status.HTTP_400_BAD_REQUEST)
         
     
+class MyUserGETView(APIView):
+    permission_classes = [permissions.IsAuthenticated,
+                          permissions.IsAdminUser]
+
+    def get(self, request, format = None):
+
+        users = MyUser.objects.all()
+
+        user_serializer = MyUserSerializer(users, many = True)
+
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
+
