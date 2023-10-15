@@ -38,9 +38,9 @@ class Register(APIView):
             return Response({"ERROR":"Los datos ingresados no son validos"}, status=status.HTTP_400_BAD_REQUEST)
         
     
-class MyUserGETView(APIView):
-    permission_classes = [permissions.IsAuthenticated,
-                          permissions.IsAdminUser]
+class MyUserGETPOSTView(APIView):
+    permission_classes = [permissions.IsAdminUser,
+                          permissions.IsAuthenticated]
 
     def get(self, request, format = None):
 
@@ -49,4 +49,60 @@ class MyUserGETView(APIView):
         user_serializer = MyUserSerializer(users, many = True)
 
         return Response(user_serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, format = None):
+        
+        user_serializer = MyUserSerializerPOST(data=request.data)
 
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return Response({"message":"Usuario registrado exitosamente!"}, status=status.HTTP_201_CREATED)
+        else:
+            return Response({"error":"Los datos ingresados no son validos. Por favor revisalos."})
+    
+
+
+class MyUserPUTView(APIView):
+
+
+    def get_user(self, pk):
+        try:
+            user = MyUser.objects.get(pk=pk)
+            return user
+        except MyUser.DoesNotExist:
+            raise Http404
+        
+    def get(self, request, pk, format = None):
+        user = self.get_user(pk=pk)
+        user_serializer = MyUserSerializer(user)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
+        
+    def put(self, request, pk, format = None):
+        user = self.get_user(pk=pk)
+        user_serializer = MyUserSerializerUpdate(user, data=request.data, partial = True)
+        if user_serializer.is_valid():
+            user_serializer.save()
+            return Response({"message":"Usuario actualizado correctamente"}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error":"Los datos ingresadon no son validos."}, status=status.HTTP_400_BAD_REQUEST)
+
+get_user_with_pk = MyUserPUTView()
+
+class MyUserDELETEView(APIView):
+    permission_classes = [
+        permissions.IsAdminUser, permissions.IsAuthenticated,
+    ]
+
+    def get(self, request, pk):
+        user = get_user_with_pk.get_user(pk)
+        user_serializer = MyUserSerializer(user)
+        try:
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
+        except MyUser.DoesNotExist:
+            return Response({"Usuario no existe"}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def delete(self, request, pk, format = None):
+        user = get_user_with_pk.get_user(pk)
+        user.delete()
+        return Response({"message":"Usuario eliminado correctamente"}, status=status.HTTP_200_OK)
+        

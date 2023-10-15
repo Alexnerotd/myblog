@@ -47,6 +47,7 @@ THIRD_APPS = [
     'corsheaders',
     'drf_yasg',
 ]
+APPEND_SLASH = True
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
