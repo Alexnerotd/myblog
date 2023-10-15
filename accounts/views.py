@@ -15,6 +15,8 @@ from .serializers import MyUserSerializerPOST, MyUserSerializerUpdate, MyUserSer
 # Create your views here.
 
 class Register(APIView):
+    permission_classes = [permissions.IsAdminUser,
+                          permissions.IsAuthenticated,]
 
     def get(self, format = None):
 
@@ -63,7 +65,8 @@ class MyUserGETPOSTView(APIView):
 
 
 class MyUserPUTView(APIView):
-
+    permission_classes = [permissions.IsAuthenticated, 
+                          permissions.IsAdminUser,]
 
     def get_user(self, pk):
         try:

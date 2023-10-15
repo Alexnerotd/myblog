@@ -39,6 +39,7 @@ LOCAL_APPS = [
     'core',
     'accounts',
     'blog',
+    'user',
 ]
 
 THIRD_APPS = [
